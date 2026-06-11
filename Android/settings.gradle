@@ -1,0 +1,21 @@
+include ':app'
+
+void includeSourceProjectIfExists(String moduleName, String modulePath) {
+    def moduleDir = new File(settingsDir, modulePath)
+    if (new File(moduleDir, 'build.gradle').exists()) {
+        include ":${moduleName}"
+        project(":${moduleName}").projectDir = moduleDir
+    } else {
+        println("[${moduleName}] 源码工程不存在，跳过 include")
+    }
+}
+
+includeSourceProjectIfExists('imsdk-plus', '../../imsdk/imsdk/src/platform/android/imsdk')
+includeSourceProjectIfExists('timpush', './TIMPush/timpush')
+includeSourceProjectIfExists('xiaomipush', './TIMPush/xiaomipush')
+includeSourceProjectIfExists('huaweipush', './TIMPush/huaweipush')
+includeSourceProjectIfExists('fcmpush', './TIMPush/fcmpush')
+includeSourceProjectIfExists('meizupush', './TIMPush/meizupush')
+includeSourceProjectIfExists('oppopush', './TIMPush/oppopush')
+includeSourceProjectIfExists('vivopush', './TIMPush/vivopush')
+includeSourceProjectIfExists('honorpush', './TIMPush/honorpush')

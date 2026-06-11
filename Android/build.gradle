@@ -1,0 +1,91 @@
+import org.gradle.util.GradleVersion
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        // 集成华为推送时取消注释下一行：
+        // maven { url 'https://developer.huawei.com/repo/' }
+        // 集成荣耀推送时取消注释下一行：
+        // maven { url 'https://developer.hihonor.com/repo' }
+    }
+    dependencies {
+        def currentGradleVersion = GradleVersion.current()
+
+        if (currentGradleVersion >= GradleVersion.version('8.9')) {
+            classpath 'com.android.tools.build:gradle:8.7.0'
+        } else if (currentGradleVersion >= GradleVersion.version('8.6')) {
+            classpath 'com.android.tools.build:gradle:8.4.0'
+        } else if (currentGradleVersion >= GradleVersion.version('8.0')) {
+            classpath 'com.android.tools.build:gradle:8.0.0'
+        } else if (currentGradleVersion >= GradleVersion.version('7.2')) {
+            classpath 'com.android.tools.build:gradle:7.0.0'
+        } else if (currentGradleVersion >= GradleVersion.version('6.7.1')) {
+            classpath 'com.android.tools.build:gradle:4.2.0'
+        }
+        // 集成华为推送时取消注释下面 5 行：
+        // if (currentGradleVersion >= GradleVersion.version('7.0')) {
+        //     classpath 'com.huawei.agconnect:agcp:1.9.4.300'
+        // } else {
+        //     classpath 'com.huawei.agconnect:agcp:1.6.0.300'
+        // }
+        // 集成 FCM 推送时取消注释下一行：
+        // classpath 'com.google.gms:google-services:4.3.15'
+        // 集成荣耀推送时取消注释下一行：
+        // classpath 'com.hihonor.mcs:asplugin:2.0.1.300'
+        classpath 'tech.yanand.maven-central-publish:tech.yanand.maven-central-publish.gradle.plugin:1.3.0'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        // 集成华为推送时取消注释下一行：
+        // maven { url 'https://developer.huawei.com/repo/' }
+        // 集成荣耀推送时取消注释下一行：
+        // maven { url 'https://developer.hihonor.com/repo' }
+    }
+
+    def imsdkPlusProject = rootProject.findProject(':imsdk-plus')
+    def hasImsdkPlusSource = imsdkPlusProject != null && new File(imsdkPlusProject.projectDir, 'build.gradle').exists()
+
+    if (hasImsdkPlusSource) {
+        configurations.all {
+            resolutionStrategy.dependencySubstitution {
+                substitute module('com.tencent.imsdk:imsdk-plus') using project(':imsdk-plus') because 'use local source imsdk-plus instead of remote'
+            }
+        }
+    }
+
+//     afterEvaluate {
+//         if (name == "imsdk-plus") {
+//             if (!hasImsdkPlusSource || !project.hasProperty('android')) {
+//                 println("未发现 imsdk-plus 源码工程，跳过 cmake 参数修改")
+//                 return
+//             }
+
+//             println("修改 imsdk-plus 的 cmake arguments 参数，支持本地构建 Push 裁剪包")
+//             println("修改前")
+//             println(project.android.defaultConfig.externalNativeBuild.cmake.arguments)
+//             println(project.android.defaultConfig.externalNativeBuild.cmake.abiFilters)
+//             project.android.defaultConfig.externalNativeBuild.cmake.arguments.add("-DIS_PUSH=false")
+// //          移除其他 abi 只构建 arm64 包进行测试
+// //            def abiFilters = project.android.defaultConfig.externalNativeBuild.cmake.abiFilters
+// //            abiFilters.remove("armeabi-v7a")
+// //            abiFilters.remove("x86_64")
+// //            abiFilters.remove("x86")
+//             println("修改后")
+//             println(project.android.defaultConfig.externalNativeBuild.cmake.arguments)
+//             println(project.android.defaultConfig.externalNativeBuild.cmake.abiFilters)
+//         }
+//     }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

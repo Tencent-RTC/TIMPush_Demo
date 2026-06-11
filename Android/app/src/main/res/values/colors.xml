@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#006EFF</color>
+    <color name="colorPrimaryDark">#0052D9</color>
+    <color name="colorAccent">#00A870</color>
+
+    <color name="push_page_bg">#F5F7FA</color>
+    <color name="push_card_bg">#FFFFFF</color>
+    <color name="push_header_start">#006EFF</color>
+    <color name="push_header_end">#0047B3</color>
+    <color name="push_divider">#E5E8EF</color>
+
+    <color name="push_text_primary">#1F2937</color>
+    <color name="push_text_secondary">#667085</color>
+    <color name="push_text_tertiary">#98A2B3</color>
+    <color name="push_text_inverse">#FFFFFF</color>
+
+    <color name="push_success">#00A870</color>
+    <color name="push_warning">#FF8A00</color>
+    <color name="push_error">#E34D59</color>
+    <color name="push_idle">#98A2B3</color>
+</resources>

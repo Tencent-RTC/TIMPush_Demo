@@ -1,0 +1,108 @@
+apply plugin: 'com.android.application'
+// 集成 FCM 推送时取消注释下一行：
+// apply plugin: 'com.google.gms.google-services'
+// 集成华为推送时取消注释下一行：
+// apply plugin: 'com.huawei.agconnect'
+// 集成荣耀推送时取消注释下一行：
+// apply plugin: 'com.hihonor.mcs.asplugin'
+
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        namespace "xxxxx"
+        applicationId "xxxxx"
+        minSdkVersion 23
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+
+        manifestPlaceholders = [
+            "VIVO_APPKEY" : "",
+            "VIVO_APPID" : "",
+            "HONOR_APPID": ""
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: '../../../../../../tuikit/android/libs')
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'com.google.code.gson:gson:2.9.1'
+    implementation 'com.tencent.liteav.tuikit:tuicore:latest.release'
+
+    def projects = this.rootProject.getAllprojects().stream().map { project -> project.name }.collect()
+    println "all projects : {$projects}"
+    if (projects.contains("imsdk-plus")) {
+        api project(':imsdk-plus')
+    } else {
+        api rootProject.getProperties().containsKey("imSdk") ? rootProject.ext.imSdk : "com.tencent.imsdk:imsdk-plus:8.9.7511"
+    }
+
+    if (projects.contains("timpush")) {
+        api project(':timpush')
+    } else {
+        api 'com.tencent.timpush:timpush:8.8.7357'
+    }
+
+    // 集成 FCM 推送时取消注释下面 5 行：
+    // if (projects.contains("fcmpush")) {
+    //     api project(':fcmpush')
+    // } else {
+    //     api 'com.tencent.timpush:fcm:8.8.7357'
+    // }
+
+    // 集成小米推送时取消注释下面 5 行：
+    // if (projects.contains("xiaomipush")) {
+    //     api project(':xiaomipush')
+    // } else {
+    //     api 'com.tencent.timpush:xiaomi:8.8.7357'
+    // }
+
+    // 集成魅族推送时取消注释下面 5 行：
+    // if (projects.contains("meizupush")) {
+    //     api project(':meizupush')
+    // } else {
+    //     api 'com.tencent.timpush:meizu:8.8.7357'
+    // }
+
+    // 集成 OPPO 推送时取消注释下面 5 行：
+    // if (projects.contains("oppopush")) {
+    //     api project(':oppopush')
+    // } else {
+    //     api 'com.tencent.timpush:oppo:8.8.7357'
+    // }
+
+    // 集成 vivo 推送时取消注释下面 5 行：
+    // if (projects.contains("vivopush")) {
+    //     api project(':vivopush')
+    // } else {
+    //     api 'com.tencent.timpush:vivo:8.8.7357'
+    // }
+
+    // 集成华为推送时取消注释下面 5 行：
+    // if (projects.contains("huaweipush")) {
+    //     api project(':huaweipush')
+    // } else {
+    //     api 'com.tencent.timpush:huawei:8.8.7357'
+    // }
+
+    // 集成荣耀推送时取消注释下面 5 行：
+    // if (projects.contains("honorpush")) {
+    //     api project(':honorpush')
+    // } else {
+    //     api 'com.tencent.timpush:honor:8.8.7357'
+    // }
+}
