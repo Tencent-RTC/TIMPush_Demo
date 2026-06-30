@@ -15,12 +15,12 @@
 
 static const int kTIMPushSDKAppID = 0;
 static NSString * const kTIMPushAppKey = @"";
+static NSString * const kCustomRegistrationIDKey = @"timpush_custom_registration_id";
 
 @interface TestPushViewController ()
 @property (nonatomic, strong) UILabel *pushIdLabel;
 @property (nonatomic, strong) UILabel *statusLabel;
 @property (nonatomic, strong) UIView *statusDotView;
-@property (nonatomic, strong) UILabel *sdkAppIdLabel;
 @property (nonatomic, strong) UITextField *registrationIDTextField;
 @property (nonatomic, strong) UILabel *resultLabel;
 @property (nonatomic, assign) BOOL isLastAuthorizationStatusDenied;
@@ -40,7 +40,7 @@ static NSString * const kTIMPushAppKey = @"";
 
     [self setupUI];
     [self updateRegisterStatus:@"未注册" color:[self colorWithHex:0x98A2B3]];
-    [self registerPushWithToast:NO];
+    [self registerWithPersistedId:NO];
 }
 
 - (void)dealloc {
@@ -136,14 +136,6 @@ static NSString * const kTIMPushAppKey = @"";
         make.leading.equalTo(self.statusDotView.mas_trailing).offset(8);
     }];
 
-    self.sdkAppIdLabel = [self labelWithText:[NSString stringWithFormat:@"SDKAppID: %d", kTIMPushSDKAppID] fontSize:12 textColor:[self colorWithHex:0x667085] bold:NO];
-    [pushIdCard addSubview:self.sdkAppIdLabel];
-    [self.sdkAppIdLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.statusLabel);
-        make.trailing.equalTo(pushIdTitleLabel);
-        make.leading.greaterThanOrEqualTo(self.statusLabel.mas_trailing).offset(12);
-    }];
-
     UIButton *copyButton = [self buttonWithTitle:@"复制" primary:YES action:@selector(copyRegistrationIDAction)];
     UIButton *refreshButton = [self buttonWithTitle:@"刷新" primary:NO action:@selector(getRegistrationIDTPushBtnAction)];
     [pushIdCard addSubview:copyButton];
@@ -193,12 +185,20 @@ static NSString * const kTIMPushAppKey = @"";
         make.height.mas_equalTo(46);
     }];
 
-    UIButton *setButton = [self buttonWithTitle:@"更新推送 ID" primary:NO action:@selector(setRegistrationIDTPushBtnAction)];
+    UIButton *setButton = [self buttonWithTitle:@"自定义推送 ID" primary:NO action:@selector(setRegistrationIDTPushBtnAction)];
+    UIButton *resetButton = [self buttonWithTitle:@"重置推送 ID" primary:NO action:@selector(resetRegistrationIDAction)];
     [actionCard addSubview:setButton];
+    [actionCard addSubview:resetButton];
     [setButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.registrationIDTextField.mas_bottom).offset(12);
-        make.leading.trailing.equalTo(actionTitleLabel);
+        make.leading.equalTo(actionTitleLabel);
         make.height.mas_equalTo(44);
+    }];
+    [resetButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.height.equalTo(setButton);
+        make.leading.equalTo(setButton.mas_trailing).offset(12);
+        make.trailing.equalTo(actionTitleLabel);
+        make.width.equalTo(setButton);
     }];
 
     UIButton *registerButton = [self buttonWithTitle:@"重新注册" primary:NO action:@selector(registerTPushAction)];
@@ -264,12 +264,23 @@ static NSString * const kTIMPushAppKey = @"";
 #pragma mark - Actions
 
 - (void)registerTPushAction {
-    [self registerPushWithToast:YES];
+    [self registerWithPersistedId:YES];
 }
 
-- (void)registerPushWithToast:(BOOL)showToast {
+// 统一注册入口：注册前先把"正确的 ID"写入 SDK 内存（自定义值或空串清空），再 registerPush。
+// setRegistrationID 必须在 registerPush 之前调用才会生效。
+- (void)registerWithPersistedId:(BOOL)showToast {
     [self updateRegisterStatus:@"注册中" color:[self colorWithHex:0xFF8A00]];
     [self showResultWithTitle:@"注册推送" detail:@"正在注册..."];
+    NSString *customID = [self customRegistrationID];
+    // 有自定义值则用自定义值；无则用空串清空 SDK 内存里的残留，让其回退默认 ID
+    [TIMPushManager setRegistrationID:(customID.length > 0 ? customID : @"") callback:^{
+        [self doRegisterPushWithToast:showToast];
+    }];
+}
+
+// 实际执行 registerPush，成功后通过 getRegistrationID 刷新展示真实生效的 ID
+- (void)doRegisterPushWithToast:(BOOL)showToast {
     [TIMPushManager registerPush:kTIMPushSDKAppID appKey:kTIMPushAppKey succ:^(NSData * _Nonnull deviceToken) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (showToast) {
@@ -314,13 +325,49 @@ static NSString * const kTIMPushAppKey = @"";
     }
 
     [self showResultWithTitle:@"设置推送 ID" detail:@"正在设置..."];
-    [TIMPushManager setRegistrationID:registrationID callback:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.pushIdLabel.text = registrationID;
-            [self showToast:@"setRegistrationID success"];
-            [self showResultWithTitle:@"设置成功" detail:[NSString stringWithFormat:@"推送 ID: %@", registrationID]];
-        });
+    // 先持久化，再走统一注册入口（注册前会把该自定义 ID 设入 SDK 并重新注册使其生效）
+    [self saveCustomRegistrationID:registrationID];
+    [self showToast:@"setRegistrationID success"];
+    [self showResultWithTitle:@"设置成功" detail:@"已持久化，正在重新注册以使自定义推送 ID 生效..."];
+    [self registerWithPersistedId:NO];
+}
+
+// 重置默认 ID：清除 Demo 持久化 → 显式 set 空串清掉 SDK 缓存 → 反注册，回到未注册态
+- (void)resetRegistrationIDAction {
+    [self clearCustomRegistrationID];
+    [self showResultWithTitle:@"重置默认 ID" detail:@"正在清除自定义推送 ID 并反注册..."];
+    // SDK 内部也缓存了 RegistrationID，先 set 空串清掉，再反注册
+    [TIMPushManager setRegistrationID:@"" callback:^{
+        [TIMPushManager unRegisterPush:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showToast:@"已重置为 SDK 默认推送 ID"];
+                self.pushIdLabel.text = @"--";
+                [self updateRegisterStatus:@"未注册" color:[self colorWithHex:0x98A2B3]];
+                [self showResultWithTitle:@"重置成功" detail:@"已清除自定义推送 ID 并反注册，重新注册或下次启动将使用默认 ID"];
+            });
+        } fail:^(int code, NSString * _Nonnull desc) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showResultWithTitle:@"重置失败" detail:[NSString stringWithFormat:@"反注册失败 code=%d, msg=%@", code, desc]];
+            });
+        }];
     }];
+}
+
+#pragma mark - Persistence
+
+- (NSString *)customRegistrationID {
+    NSString *value = [[NSUserDefaults standardUserDefaults] stringForKey:kCustomRegistrationIDKey];
+    return value.length > 0 ? value : @"";
+}
+
+- (void)saveCustomRegistrationID:(NSString *)registrationID {
+    [[NSUserDefaults standardUserDefaults] setObject:registrationID forKey:kCustomRegistrationIDKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)clearCustomRegistrationID {
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kCustomRegistrationIDKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)unregisterTPushBtnAction {

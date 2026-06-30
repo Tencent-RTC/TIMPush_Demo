@@ -10,7 +10,6 @@
 
     <string name="push_section_push_id">推送 ID</string>
     <string name="push_push_id_desc">将该 ID 填入控制台或服务端接口，即可向当前设备发送测试推送。</string>
-    <string name="push_sdk_app_id">SDKAppID</string>
     <string name="push_status">状态</string>
     <string name="push_status_idle">未注册</string>
     <string name="push_status_registering">注册中</string>
@@ -24,6 +23,7 @@
     <string name="push_section_actions">更多操作</string>
     <string name="push_registration_hint">输入新的推送 ID</string>
     <string name="push_set_registration_id">自定义推送 ID</string>
+    <string name="push_reset_registration_id">重置推送 ID</string>
     <string name="push_register">重新注册</string>
     <string name="push_unregister">注销推送</string>
 

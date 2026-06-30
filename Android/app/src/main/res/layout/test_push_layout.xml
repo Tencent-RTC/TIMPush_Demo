@@ -101,13 +101,6 @@
                         android:textColor="@color/push_idle"
                         android:textSize="13sp" />
 
-                    <TextView
-                        android:id="@+id/tv_sdk_app_id"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/push_text_secondary"
-                        android:textSize="12sp"
-                        android:textIsSelectable="true" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -168,14 +161,34 @@
                     android:textColorHint="@color/push_text_tertiary"
                     android:textSize="14sp" />
 
-                <Button
-                    style="@style/PushButtonBase"
+                <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_push_secondary_button"
-                    android:onClick="setRegistrationId"
-                    android:text="@string/push_set_registration_id"
-                    android:textColor="@color/colorPrimary" />
+                    android:orientation="horizontal">
+
+                    <Button
+                        style="@style/PushButtonBase"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_push_secondary_button"
+                        android:onClick="setRegistrationId"
+                        android:text="@string/push_set_registration_id"
+                        android:textColor="@color/colorPrimary" />
+
+                    <Space
+                        android:layout_width="12dp"
+                        android:layout_height="1dp" />
+
+                    <Button
+                        style="@style/PushButtonBase"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_push_secondary_button"
+                        android:onClick="resetRegistrationId"
+                        android:text="@string/push_reset_registration_id"
+                        android:textColor="@color/colorPrimary" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

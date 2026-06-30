@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,13 +20,15 @@ import com.tencent.qcloud.tim.push.TIMPushManager;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 
-import org.jetbrains.annotations.Nullable;
+import androidx.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
 
     public static final int SDK_APP_ID = 0;
     public static final String APP_KEY = "";
+    private static final String PREFS_NAME = "timpush_demo_prefs";
+    private static final String KEY_CUSTOM_REGISTRATION_ID = "custom_registration_id";
 
     private EditText registrationIdEditView;
     private TextView registrationIdResultView;
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        registerPush(false);
+        registerWithPersistedId(false);
         handlePushIntent(getIntent());
     }
 
@@ -55,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
         registerStateView = findViewById(R.id.tv_register_state);
         resultView = findViewById(R.id.tv_log);
         statusDotView = findViewById(R.id.status_dot);
-
-        TextView sdkAppIdView = findViewById(R.id.tv_sdk_app_id);
-        sdkAppIdView.setText(getString(R.string.push_sdk_app_id) + ": " + SDK_APP_ID);
 
         findViewById(R.id.btn_copy_registration_id).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,12 +88,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void registerTPush(View view) {
-        registerPush(true);
+        registerWithPersistedId(true);
     }
 
-    private void registerPush(final boolean showToast) {
+    // 统一注册入口：注册前先把"正确的 ID"写入 SDK 内存（自定义值或空串清空），再 registerPush。
+    // setRegistrationID 必须在 registerPush 之前调用才会生效。
+    private void registerWithPersistedId(final boolean showToast) {
         setRegisterStatus(R.string.push_status_registering, R.color.push_warning);
         showResult("注册推送", "正在注册...");
+        final String customId = getCustomRegistrationId();
+        // 有自定义值则用自定义值；无则用空串清空 SDK 内存里的残留，让其回退默认 ID
+        TIMPushManager.getInstance().setRegistrationID(customId == null ? "" : customId, new TIMPushCallback() {
+            @Override
+            public void onSuccess(Object data) {
+                doRegisterPush(showToast);
+            }
+
+            @Override
+            public void onError(int errCode, String errMsg, Object data) {
+                // 即使设置失败也继续注册，避免阻塞
+                doRegisterPush(showToast);
+            }
+        });
+    }
+
+    // 实际执行 registerPush，成功后通过 getRegistrationID 刷新展示真实生效的 ID
+    private void doRegisterPush(final boolean showToast) {
         TIMPushManager.getInstance().registerPush(getBaseContext(), SDK_APP_ID, APP_KEY, new TIMPushCallback() {
             @Override
             public void onSuccess(Object data) {
@@ -193,20 +213,74 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showResult("设置 RegistrationID", "正在设置...");
-        TIMPushManager.getInstance().setRegistrationID(registrationId, new TIMPushCallback() {
+        // 先持久化，再走统一注册入口（注册前会把该自定义 ID 设入 SDK 并重新注册使其生效）
+        saveCustomRegistrationId(registrationId);
+        ToastUtil.toastShortMessage("setRegistrationId success");
+        showResult("设置成功", "已持久化，正在重新注册以使自定义推送 ID 生效...");
+        registerWithPersistedId(false);
+    }
+
+    // 重置默认 ID：清除本地持久化的自定义推送 ID，并重新注册以恢复 SDK 默认生成
+    // 重置默认 ID：清除 Demo 持久化 → 显式 set 空串清掉 SDK 缓存 → 反注册，回到未注册态
+    public void resetRegistrationId(View view) {
+        clearCustomRegistrationId();
+        showResult("重置默认 ID", "正在清除自定义推送 ID 并反注册...");
+        // SDK 内部也缓存了 RegistrationID，先 set 空串清掉
+        TIMPushManager.getInstance().setRegistrationID("", new TIMPushCallback() {
             @Override
             public void onSuccess(Object data) {
-                Log.d(TAG, "setRegistrationId success");
+                resetUnRegister();
+            }
+
+            @Override
+            public void onError(int errCode, String errMsg, Object data) {
+                resetUnRegister();
+            }
+        });
+    }
+
+    // 重置流程第二步：反注册，清除当前登录态/token
+    private void resetUnRegister() {
+        TIMPushManager.getInstance().unRegisterPush(new TIMPushCallback() {
+            @Override
+            public void onSuccess(Object data) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtil.toastShortMessage("setRegistrationId success");
-                        registrationIdResultView.setText(registrationId);
-                        showResult("设置成功", "RegistrationID: " + registrationId);
+                        ToastUtil.toastShortMessage("已重置为 SDK 默认推送 ID");
+                        setRegisterStatus(R.string.push_status_idle, R.color.push_idle);
+                        registrationIdResultView.setText(getString(R.string.push_empty_value));
+                        showResult("重置成功", "已清除自定义推送 ID 并反注册，重新注册或下次启动将使用默认 ID");
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final int errCode, final String errMsg, Object data) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showResult("重置失败", "反注册失败 code=" + errCode + ", msg=" + errMsg);
                     }
                 });
             }
         });
+    }
+
+    private SharedPreferences getPrefs() {
+        return getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+    }
+
+    private String getCustomRegistrationId() {
+        return getPrefs().getString(KEY_CUSTOM_REGISTRATION_ID, "");
+    }
+
+    private void saveCustomRegistrationId(String registrationId) {
+        getPrefs().edit().putString(KEY_CUSTOM_REGISTRATION_ID, registrationId).apply();
+    }
+
+    private void clearCustomRegistrationId() {
+        getPrefs().edit().remove(KEY_CUSTOM_REGISTRATION_ID).apply();
     }
 
     private void setRegisterStatus(int statusTextRes, int statusColorRes) {

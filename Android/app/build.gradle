@@ -11,7 +11,7 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        namespace "xxxxx"
+        namespace "com.tencent.qcloud.tim.tuikit"
         applicationId "xxxxx"
         minSdkVersion 23
         targetSdkVersion 33
