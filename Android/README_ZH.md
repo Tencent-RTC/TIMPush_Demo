@@ -15,7 +15,7 @@
 
 ### 1. 设置应用包名
 
-`app/build.gradle` 中的 `namespace` / `applicationId` 默认是占位符 `"xxxxx"`，改为你自己的包名（须与控制台及各厂商后台登记的包名一致）：
+`app/build.gradle` 中的 `namespace` / `applicationId` 默认是 `"com.tencent.qcloud.tim.tuikit"`，改为你自己的包名（须与控制台及各厂商后台登记的包名一致）：
 
 ```groovy
 android {

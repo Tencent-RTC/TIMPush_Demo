@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         namespace "com.tencent.qcloud.tim.tuikit"
-        applicationId "xxxxx"
+        applicationId "com.tencent.qcloud.tim.tuikit"
         minSdkVersion 23
         targetSdkVersion 33
         versionCode 1

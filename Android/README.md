@@ -15,7 +15,7 @@ The Tencent Cloud TIMPush offline-push Android experience demo. **This project i
 
 ### 1. Set the application package name
 
-The `namespace` / `applicationId` in `app/build.gradle` are the placeholder `"xxxxx"` by default. Change them to your own package name (must match the one registered in the console and each vendor's portal):
+The `namespace` / `applicationId` in `app/build.gradle` are `"com.tencent.qcloud.tim.tuikit"` by default. Change them to your own package name (must match the one registered in the console and each vendor's portal):
 
 ```groovy
 android {
