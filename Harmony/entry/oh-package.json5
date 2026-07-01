@@ -1,0 +1,13 @@
+{
+  name: "pushdemo",
+  version: "1.0.0",
+  description: "TIMPush HarmonyOS PushDemo",
+  main: "",
+  author: "TencentCloud",
+  license: "",
+  dependencies: {
+    "@tencentcloud/imsdk": "^9.0.7652",
+    "@tencentcloud/timpush": "^8.7.7203",
+  },
+  devDependencies: {},
+}

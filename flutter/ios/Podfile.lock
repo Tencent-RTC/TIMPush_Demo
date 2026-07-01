@@ -1,0 +1,52 @@
+PODS:
+  - Flutter (1.0.0)
+  - HydraAsync (2.0.6)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - tencent_cloud_chat_push (9.0.7652):
+    - Flutter
+    - TIMPush (= 9.0.7652)
+    - TXIMSDK_Plus_iOS_XCFramework
+  - tencent_cloud_chat_sdk (8.0.0):
+    - Flutter
+    - HydraAsync
+    - TXIMSDK_Plus_iOS_XCFramework (~> 9.0.7652)
+  - TIMPush (9.0.7652):
+    - TXIMSDK_Plus_iOS_XCFramework (>= 9.0.7652)
+  - TXIMSDK_Plus_iOS_XCFramework (9.0.7654)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - tencent_cloud_chat_push (from `.symlinks/plugins/tencent_cloud_chat_push/ios`)
+  - tencent_cloud_chat_sdk (from `.symlinks/plugins/tencent_cloud_chat_sdk/ios`)
+
+SPEC REPOS:
+  trunk:
+    - HydraAsync
+    - TIMPush
+    - TXIMSDK_Plus_iOS_XCFramework
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  tencent_cloud_chat_push:
+    :path: ".symlinks/plugins/tencent_cloud_chat_push/ios"
+  tencent_cloud_chat_sdk:
+    :path: ".symlinks/plugins/tencent_cloud_chat_sdk/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  HydraAsync: 8d589bd725b0224f899afafc9a396327405f8063
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  tencent_cloud_chat_push: 4458c8ee820896946d5d945e77752f84e7c47550
+  tencent_cloud_chat_sdk: 572f8aaa0366f5ff903b862f31d931a65b562ff0
+  TIMPush: 117c8737ef6e61a27071f5ffbcf6a55919842f5d
+  TXIMSDK_Plus_iOS_XCFramework: c017d275f6daefee4bb40de2139ed0f9b57ec37c
+
+PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
+
+COCOAPODS: 1.15.2

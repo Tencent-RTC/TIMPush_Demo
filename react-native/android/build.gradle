@@ -1,0 +1,41 @@
+buildscript {
+    ext {
+        buildToolsVersion = "34.0.0"
+        minSdkVersion = 23
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        ndkVersion = "26.1.10909125"
+        kotlinVersion = "1.9.25"
+    }
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        // 集成华为推送时取消注释下一行：
+        // maven { url "https://developer.huawei.com/repo/" }
+        // 集成荣耀推送时取消注释下一行：
+        // maven { url "https://developer.hihonor.com/repo" }
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.5.0")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath 'com.huawei.agconnect:agcp:1.9.4.300'
+        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.hihonor.mcs:asplugin:2.0.1.300'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
+        // 集成华为推送时取消注释下一行：
+        // maven { url "https://developer.huawei.com/repo/" }
+        // 集成荣耀推送时取消注释下一行：
+        // maven { url "https://developer.hihonor.com/repo" }
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"

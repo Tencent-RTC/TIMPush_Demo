@@ -1,0 +1,15 @@
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            plugin('android-application', 'com.android.application').version('8.5.0')
+        }
+    }
+}
+
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+rootProject.name = 'PushDemo'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')

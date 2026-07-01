@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "TIMPush HarmonyOS PushDemo"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "TIMPush Demo Ability"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "TIMPush Demo"
+    }
+  ]
+}

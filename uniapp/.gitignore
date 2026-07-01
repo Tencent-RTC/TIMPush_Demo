@@ -1,0 +1,13 @@
+unpackage
+
+node_modules
+dist
+.history
+.idea
+.vscode/
+!.vscode/settings.json
+
+yarn.lock
+pnpm-lock
+.DS_Store
+package-lock.json

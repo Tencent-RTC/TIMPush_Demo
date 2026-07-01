@@ -1,0 +1,60 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+// 集成 FCM 推送时取消注释下一行：
+// apply plugin: 'com.google.gms.google-services'
+// 集成华为推送时取消注释下一行：
+// apply plugin: 'com.huawei.agconnect'
+// 集成荣耀推送时取消注释下一行：
+// apply plugin: 'com.hihonor.mcs.asplugin'
+
+android {
+    namespace "com.tencent.qcloud.tim.tuikit"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion "27.0.12077973"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    defaultConfig {
+        applicationId "com.tencent.qcloud.tim.tuikit"
+        minSdk 23
+        targetSdk flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+        manifestPlaceholders = [
+            "VIVO_APPKEY" : "",
+            "VIVO_APPID" : "",
+            "HONOR_APPID": ""
+        ]
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source "../.."
+}
+
+dependencies {
+    // 厂商推送包，按需集成
+    // implementation "com.tencent.timpush:huawei:8.8.7357"
+    // implementation "com.tencent.timpush:xiaomi:8.8.7357"
+    // implementation "com.tencent.timpush:oppo:8.8.7357"
+    // implementation "com.tencent.timpush:vivo:8.8.7357"
+    // implementation "com.tencent.timpush:honor:8.8.7357"
+    // implementation "com.tencent.timpush:meizu:8.8.7357"
+    // implementation "com.tencent.timpush:fcm:8.8.7357"
+}

@@ -20,12 +20,18 @@ Push Service is a one-stop App message push solution that delivers cross-platfor
 > For more product details, see the official documentation: [Push Service Overview](https://cloud.tencent.com/document/product/269/100621).
 
 ## Project Structure
-This project is the experience demo for TIMPush offline push, split into two independent sub-projects by platform. For the client-side integration steps, configuration items, and troubleshooting of each platform, see the README in the corresponding directory:
+This project is the experience demo for TIMPush offline push, split into independent sub-projects by platform. For the client-side integration steps, configuration items, and troubleshooting of each platform, see the README in the corresponding directory:
 
 | Directory | Platform | Integration Guide |
 |---|---|---|
 | `Android/` | Android (Android Studio project) | [Android Integration Guide](./Android/README.md) |
 | `iOS/` | iOS (Xcode project) | [iOS Integration Guide](./iOS/README.md) |
+| `Harmony/` | HarmonyOS (DevEco Studio project) | [HarmonyOS Integration Guide](./Harmony/README.md) |
+| `flutter/` | Flutter | [Flutter Integration Guide](./flutter/README.md) |
+| `react-native/` | React Native | [React Native Integration Guide](./react-native/README.md) |
+| `uniapp/` | uni-app (HBuilderX project) | [uni-app Integration Guide](./uniapp/README.md) |
+| `unity/` | Unity | [Unity Integration Guide](./unity/README.md) |
+| `ue/` | Unreal Engine (UE5) | [Unreal Engine Integration Guide](./ue/README.md) |
 
 ## Common Prerequisites (Console)
 No matter which platform you run, you must first complete the following account- and vendor-related setup in the console. After that, go to the corresponding platform directory to continue the client-side configuration.
@@ -56,6 +62,12 @@ After completing the console prerequisites above, go to the corresponding platfo
 
 - **Android**: Fill the SDKAppID / AppKey into the project and place the vendor services.json. See the [Android Integration Guide](./Android/README.md).
 - **iOS**: Run `pod install`, and configure signing / Bundle ID / App Group. See the [iOS Integration Guide](./iOS/README.md).
+- **HarmonyOS**: Sync `ohpm` dependencies, set the `bundleName`, fill the SDKAppID / AppKey, and configure the HarmonyOS push channel. See the [HarmonyOS Integration Guide](./Harmony/README.md).
+- **Flutter**: Run `flutter pub get`, fill the SDKAppID / AppKey, and configure the Android / iOS native side. See the [Flutter Integration Guide](./flutter/README.md).
+- **React Native**: Run `npm install` / `pod install`, fill the SDKAppID / AppKey, and configure the Android / iOS native side. See the [React Native Integration Guide](./react-native/README.md).
+- **uni-app**: Import the `TencentCloud-Push` plugin, fill the SDKAppID / AppKey, place the `nativeResources/` config files, and build a custom base. See the [uni-app Integration Guide](./uniapp/README.md).
+- **Unity**: Open `pushdemo/`, fill the SDKAppID / AppKey, and configure the Android gradle templates / iOS. See the [Unity Integration Guide](./unity/README.md).
+- **Unreal Engine**: Open `pushdemo/`, fill the SDKAppID / AppKey, and configure `TIMPush_APL.xml` / iOS Plist. See the [Unreal Engine Integration Guide](./ue/README.md).
 
 Receiving a push means the whole flow works.
 

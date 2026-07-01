@@ -1,0 +1,22 @@
+{
+  "name": "uniapp-push",
+  "version": "0.2.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "build:zip": "node scripts/build_zip.js",
+    "prerelease": "node scripts/prerelease.js",
+    "publish:npm": "npm run prerelease && node scripts/publish.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.woa.com:qiaoyang/uniapp-push.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tencentcloud/react-native-push": "^0.1.0",
+    "archiver": "^7.0.1"
+  }
+}

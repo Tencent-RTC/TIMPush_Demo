@@ -20,12 +20,18 @@
 > 更多产品介绍请参见官方文档：[推送服务 产品概述](https://cloud.tencent.com/document/product/269/100621)。
 
 ## 工程结构
-本工程是 TIMPush 离线推送的体验 Demo，按平台拆分为两个独立子工程。各平台的客户端接入步骤、配置项与常见问题排查，请进入对应目录的 README 查看：
+本工程是 TIMPush 离线推送的体验 Demo，按平台拆分为多个独立子工程。各平台的客户端接入步骤、配置项与常见问题排查，请进入对应目录的 README 查看：
 
 | 目录 | 平台 | 接入指引 |
 |---|---|---|
 | `Android/` | Android（Android Studio 工程） | [Android 接入指引](./Android/README.md) |
 | `iOS/` | iOS（Xcode 工程） | [iOS 接入指引](./iOS/README.md) |
+| `Harmony/` | HarmonyOS（DevEco Studio 工程） | [HarmonyOS 接入指引](./Harmony/README.md) |
+| `flutter/` | Flutter | [Flutter 接入指引](./flutter/README.md) |
+| `react-native/` | React Native | [React Native 接入指引](./react-native/README.md) |
+| `uniapp/` | uni-app（HBuilderX 工程） | [uni-app 接入指引](./uniapp/README.md) |
+| `unity/` | Unity | [Unity 接入指引](./unity/README.md) |
+| `ue/` | Unreal Engine（UE5） | [Unreal Engine 接入指引](./ue/README.md) |
 
 ## 通用前置准备（控制台）
 无论跑通哪个平台，都需要先在控制台完成以下与账号、厂商相关的准备工作。完成后再进入对应平台目录继续客户端配置。
@@ -56,6 +62,12 @@
 
 - **Android**：将 SDKAppID / AppKey 等写入工程、放置厂商 services.json，详见 [Android 接入指引](./Android/README.md)。
 - **iOS**：执行 `pod install`、配置签名 / Bundle ID / App Group，详见 [iOS 接入指引](./iOS/README.md)。
+- **HarmonyOS**：同步 `ohpm` 依赖、设置 `bundleName`、填写 SDKAppID / AppKey 并配置鸿蒙推送通道，详见 [HarmonyOS 接入指引](./Harmony/README.md)。
+- **Flutter**：执行 `flutter pub get`、填写 SDKAppID / AppKey 并配置 Android / iOS 原生侧，详见 [Flutter 接入指引](./flutter/README.md)。
+- **React Native**：执行 `npm install` / `pod install`、填写 SDKAppID / AppKey 并配置 Android / iOS 原生侧，详见 [React Native 接入指引](./react-native/README.md)。
+- **uni-app**：导入 `TencentCloud-Push` 插件、填写 SDKAppID / AppKey、放置 `nativeResources/` 配置文件并制作自定义基座，详见 [uni-app 接入指引](./uniapp/README.md)。
+- **Unity**：打开 `pushdemo/`、填写 SDKAppID / AppKey 并配置 Android gradle 模板 / iOS，详见 [Unity 接入指引](./unity/README.md)。
+- **Unreal Engine**：打开 `pushdemo/`、填写 SDKAppID / AppKey 并配置 `TIMPush_APL.xml` / iOS Plist，详见 [Unreal Engine 接入指引](./ue/README.md)。
 
 收到推送即说明全流程已打通。
 

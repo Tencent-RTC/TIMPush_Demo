@@ -1,0 +1,9 @@
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@tencentcloud/react-native-push": ["src/types/tencentcloud-react-native-push"]
+    }
+  }
+}

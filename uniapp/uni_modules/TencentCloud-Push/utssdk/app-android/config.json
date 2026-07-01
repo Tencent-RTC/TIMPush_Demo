@@ -1,0 +1,27 @@
+{
+  "minSdkVersion": "21",
+  "dependencies": [	
+    "com.google.android.material:material:1.3.0",
+    "com.google.code.gson:gson:2.9.1",
+    "commons-codec:commons-codec:1.15",
+    "com.github.bumptech.glide:glide:4.12.0",
+    "com.tencent.liteav.tuikit:tuicore:9.0.7652",
+    "com.tencent.timpush:timpush:9.0.7652",
+    "com.tencent.timpush:huawei:9.0.7652",
+    "com.tencent.timpush:xiaomi:9.0.7652",
+    "com.tencent.timpush:oppo:9.0.7652",
+    "com.tencent.timpush:fcm:9.0.7652",
+    "com.tencent.timpush:meizu:9.0.7652"
+  ],
+  "project": {
+    "plugins": [
+      "com.huawei.agconnect",
+      "com.hihonor.mcs.asplugin"
+    ],
+    "dependencies": [
+      "com.huawei.agconnect:agcp:1.9.1.301",
+      "com.google.gms:google-services:4.3.15",
+      "com.hihonor.mcs:asplugin:2.0.1.300"
+    ]
+  }
+}
